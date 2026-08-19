@@ -1,21 +1,56 @@
 # EXP3
+DROP TABLE IF EXISTS enrollment;
+DROP TABLE IF EXISTS course;
+DROP TABLE IF EXISTS student;
+DROP TABLE IF EXISTS department;
 
-CREATE DATABASE dbms_p3; USE dbms_p3;
+CREATE TABLE department (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50) UNIQUE NOT NULL
+);
 
-CREATE TABLE department ( department_id INT PRIMARY KEY, department_name VARCHAR(30) );
+INSERT INTO department VALUES
+(1, 'Computer Science'),
+(2, 'Information Technology'),
+(3, 'Electronics');
 
-CREATE TABLE student ( student_id INT PRIMARY KEY, student_name VARCHAR(30), department_id INT, FOREIGN KEY (department_id) REFERENCES department(department_id) );
+CREATE TABLE student (
+    roll_no INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) UNIQUE,
+    aadhar_no VARCHAR(12) UNIQUE,
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES department(dept_id)
+);
 
-CREATE TABLE course ( course_id INT PRIMARY KEY, course_name VARCHAR(30), department_id INT, FOREIGN KEY (department_id) REFERENCES department(department_id) );
+INSERT INTO student VALUES
+(101, 'Atharva', 'atharva@gmail.com', '123456789012', 1),
+(102, 'Rishabh', 'rishabh@gmail.com', '123456789013', 2),
+(103, 'Someone', 'someone@gmail.com', '123456789014', 1);
 
-CREATE TABLE enrollment ( enrollment_id INT PRIMARY KEY, student_id INT, course_id INT, FOREIGN KEY (student_id) REFERENCES student(student_id), FOREIGN KEY (course_id) REFERENCES course(course_id) );
+CREATE TABLE course (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(50) NOT NULL,
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES department(dept_id)
+);
 
-INSERT INTO department VALUES (1, 'Computer Science'), (2, 'Electronics');
+INSERT INTO course VALUES
+(1, 'Database Management', 1),
+(2, 'Python Programming', 1),
+(3, 'Computer Networks', 2);
 
-INSERT INTO student VALUES (101, 'Rahul', 1), (102, 'Manthan', 2);
+CREATE TABLE enrollment (
+    roll_no INT,
+    course_id INT,
+    semester INT CHECK (semester BETWEEN 1 AND 8),
+    grade CHAR(2),
+    PRIMARY KEY (roll_no, course_id, semester),
+    FOREIGN KEY (roll_no) REFERENCES student(roll_no),
+    FOREIGN KEY (course_id) REFERENCES course(course_id)
+);
 
-INSERT INTO course VALUES (201, 'DBMS', 1), (202, 'Digital System Design', 2);
-
-INSERT INTO enrollment VALUES (1, 101, 201), (2, 102, 202);
-
-SELECT * FROM department; SELECT * FROM student; SELECT * FROM course; SELECT * FROM enrollment;
+INSERT INTO enrollment VALUES
+(101, 1, 3, 'A'),
+(102, 3, 3, 'B'),
+(103, 2, 4, 'A');
